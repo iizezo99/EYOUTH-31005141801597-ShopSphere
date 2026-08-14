@@ -39,7 +39,9 @@ const apiLimiter = rateLimit({
 
 
 app.use(cors({
- origin: "*"
+  // Echo the requesting origin so cookies can be used; '*' is invalid with credentials.
+  origin: true,
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
