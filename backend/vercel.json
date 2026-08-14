@@ -1,6 +1,29 @@
 {
   "version": 2,
   "buildCommand": "npx prisma generate",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://eyouth-31005141801597-shop-sphere-q.vercel.app"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
   "builds": [{ "src": "api/index.js", "use": "@vercel/node" }],
   "routes": [{ "src": "/(.*)", "dest": "api/index.js" }]
 }
