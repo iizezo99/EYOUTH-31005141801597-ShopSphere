@@ -37,20 +37,9 @@ const apiLimiter = rateLimit({
   message: { message: 'Too many requests, please try again later.' },
 });
 
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
-  .split(',')
-  .map((origin) => origin.trim())
-  .concat('http://localhost:5173');
-const allowAllCors = process.env.ALLOW_ALL_CORS === 'true';
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowAllCors || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Origin is not allowed by CORS'));
-  },
-  credentials: true
+ origin: "*"
 }));
 app.use(express.json());
 app.use(cookieParser());
