@@ -9,6 +9,7 @@
 1. **Supabase**: create a project, set the transaction pooler URI as `DATABASE_URL`, and set the session pooler URI as `DIRECT_URL` for Prisma migrations. Run `npx prisma migrate deploy` from `backend` once against the production project. Seed only deliberately; the seed script contains demo credentials.
 2. **MongoDB Atlas**: create a production cluster and database user, allow only the backend egress IPs (avoid `0.0.0.0/0`), then set `MONGO_URI` to the SRV connection string. Enable backups and alerting.
 3. **Vercel frontend**: import the repository, set the project root to `frontend`, and add `VITE_API_URL=https://<backend-domain>/api` for Production, Preview, and Development as appropriate.
+   Add `VITE_REVIEW_API_URL=https://<review-service-domain>` so Product Details can load and submit 1–5 star reviews.
 4. **Vercel backend**: import the same repository as a second project, set the root directory to `backend`, and add the variables used by the local backend configuration. `backend/vercel.json` exposes the Express app through `api/index.js`.
 5. Set `FRONTEND_URL` on the backend to the exact frontend origin. Rotate `JWT_SECRET`, database passwords, and SMTP credentials through Vercel Environment Variables or a cloud secret manager; never commit them.
 

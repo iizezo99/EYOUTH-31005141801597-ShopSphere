@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useCart } from '../context/cartContext';
+import ReviewSection from '../components/ReviewSection';
 import './ProductDetails.css';
 
 const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/400';
@@ -50,6 +51,7 @@ const ProductDetails = () => {
           <button className="btn-primary">Back to Products</button>
         </Link>
       </div>
+      <ReviewSection productId={product.id} />
     </div>
   );
 
