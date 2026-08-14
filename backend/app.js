@@ -18,6 +18,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.disable('x-powered-by');
+// Vercel and the ingress controller forward the client IP in this header.
+// Trust one proxy hop so express-rate-limit can identify clients correctly.
+app.set('trust proxy', 1);
 app.use(helmet());
 app.use((req, res, next) => {
   req.requestId = req.get('x-request-id') || crypto.randomUUID();
