@@ -1,0 +1,46 @@
+name: EYOUTH-31005141801597-ShopSphere CI/CD
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      - name: Install backend
+        run: npm ci
+        working-directory: backend
+      - name: Test backend
+        run: npm test
+        working-directory: backend
+      - name: Install frontend
+        run: npm ci
+        working-directory: frontend
+      - name: Test frontend
+        run: npm test
+        working-directory: frontend
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+      - name: Validate Kubernetes manifests
+        run: kubectl kustomize k8s/overlays/aws-simulation >/dev/null && kubectl kustomize k8s/overlays/gcp-simulation >/dev/null
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Production deployment handoff
+        run: echo "Configure Vercel or your cloud deploy integration for this protected environment."

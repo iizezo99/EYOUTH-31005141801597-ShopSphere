@@ -34,10 +34,8 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_started
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce_db
-      MONGO_URI: mongodb://mongodb:27017/ecommerce_cart
-      JWT_SECRET: mySuperSecretKey12345
+    env_file:
+      - ./backend/.env
     volumes:
       - ./backend/uploads:/app/uploads
 
@@ -45,7 +43,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: http://localhost:5000/api
+        VITE_API_URL: ${VITE_API_URL}
     container_name: ecommerce_frontend
     ports:
       - "3000:3000"

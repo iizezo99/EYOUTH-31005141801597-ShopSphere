@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eyouth-31005141801597-shopsphere-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: eyouth-31005141801597-shopsphere-backend }
+  template:
+    metadata:
+      labels: { app: eyouth-31005141801597-shopsphere-backend }
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/your-org/shopsphere-backend:latest
+          ports: [{ containerPort: 5000 }]
+          envFrom:
+            - secretRef: { name: eyouth-31005141801597-shopsphere-backend-secrets }
+          readinessProbe:
+            httpGet: { path: /health/ready, port: 5000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 5000 }
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eyouth-31005141801597-shopsphere-backend
+spec:
+  selector: { app: eyouth-31005141801597-shopsphere-backend }
+  ports: [{ port: 5000, targetPort: 5000 }]
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: eyouth-31005141801597-shopsphere-backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: eyouth-31005141801597-shopsphere-backend
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } }

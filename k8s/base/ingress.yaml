@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eyouth-31005141801597-shopsphere-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: shopsphere.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: eyouth-31005141801597-shopsphere-backend
+                port:
+                  number: 5000
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: eyouth-31005141801597-shopsphere-backend
+                port:
+                  number: 5000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eyouth-31005141801597-shopsphere-frontend
+                port:
+                  number: 3000

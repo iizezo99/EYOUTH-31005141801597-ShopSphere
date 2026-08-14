@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eyouth-31005141801597-shopsphere-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: eyouth-31005141801597-shopsphere-frontend }
+  template:
+    metadata:
+      labels: { app: eyouth-31005141801597-shopsphere-frontend }
+    spec:
+      containers:
+        - name: frontend
+          image: pabdulaziz/shopsphere-frontend:dev
+          ports: [{ containerPort: 3000 }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eyouth-31005141801597-shopsphere-frontend
+spec:
+  selector: { app: eyouth-31005141801597-shopsphere-frontend }
+  ports: [{ port: 3000, targetPort: 3000 }]
