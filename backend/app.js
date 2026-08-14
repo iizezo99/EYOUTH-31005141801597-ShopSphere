@@ -74,6 +74,9 @@ app.get('/', (req, res) => {
   res.send('✅ Backend is running!');
 });
 
+// Browsers request these automatically; the API does not need a favicon.
+app.get(['/favicon.ico', '/favicon.png'], (_req, res) => res.status(204).end());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
