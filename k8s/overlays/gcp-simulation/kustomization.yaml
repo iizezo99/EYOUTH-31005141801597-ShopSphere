@@ -13,4 +13,9 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: pabdulaziz/shopsphere-backend:latest
+        value: eyouth-31005141801597-shopsphere-backend:k8s-latest
+  - target: { kind: Deployment, name: eyouth-31005141801597-shopsphere-frontend }
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: eyouth-31005141801597-shopsphere-frontend:k8s-latest

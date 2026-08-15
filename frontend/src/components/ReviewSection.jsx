@@ -4,14 +4,25 @@ import './ReviewSection.css';
 
 const REVIEW_API_URL = import.meta.env.VITE_REVIEW_API_URL || '';
 
-const Stars = ({ value, onChange, interactive = false }) => (
-  <div className={`review-stars${interactive ? ' review-stars-interactive' : ''}`} aria-label={`${value} out of 5 stars`}>
+const Stars = ({ value, onChange, interactive = false }) => {
+  const [hoveredValue, setHoveredValue] = useState(0);
+  const displayValue = interactive && hoveredValue ? hoveredValue : value;
+
+  return (
+  <div
+    className={`review-stars${interactive ? ' review-stars-interactive' : ''}`}
+    aria-label={`${value} out of 5 stars`}
+    onMouseLeave={() => interactive && setHoveredValue(0)}
+  >
     {[1, 2, 3, 4, 5].map((star) => (
       <button
         key={star}
         type="button"
-        className={`review-star${star <= value ? ' is-selected' : ''}`}
+        className={`review-star${star <= displayValue ? ' is-selected' : ''}`}
         onClick={() => interactive && onChange(star)}
+        onMouseEnter={() => interactive && setHoveredValue(star)}
+        onFocus={() => interactive && setHoveredValue(star)}
+        onBlur={() => interactive && setHoveredValue(0)}
         aria-label={`${star} star${star === 1 ? '' : 's'}`}
         disabled={!interactive}
       >
@@ -19,7 +30,8 @@ const Stars = ({ value, onChange, interactive = false }) => (
       </button>
     ))}
   </div>
-);
+  );
+};
 
 const ReviewSection = ({ productId }) => {
   const { user } = useAuth();
