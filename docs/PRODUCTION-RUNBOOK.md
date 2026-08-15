@@ -11,7 +11,8 @@
 3. **Vercel frontend**: import the repository, set the project root to `frontend`, and add `VITE_API_URL=https://<backend-domain>/api` for Production, Preview, and Development as appropriate.
    Add `VITE_REVIEW_API_URL=https://<review-service-domain>` so Product Details can load and submit 1–5 star reviews.
 4. **Vercel backend**: import the same repository as a second project, set the root directory to `backend`, and add the variables used by the local backend configuration. `backend/vercel.json` exposes the Express app through `api/index.js`.
-5. Set `FRONTEND_URL` on the backend to the exact frontend origin. Rotate `JWT_SECRET`, database passwords, and SMTP credentials through Vercel Environment Variables or a cloud secret manager; never commit them.
+5. **Review service**: deploy a third Vercel project with root directory `services/review-service`, set `MONGO_URI` and `FRONTEND_URL`, then set `VITE_REVIEW_API_URL=https://<review-service-domain>` in the frontend Production environment and redeploy the frontend.
+6. Set `FRONTEND_URL` on the backend to the exact frontend origin. Rotate `JWT_SECRET`, database passwords, and SMTP credentials through Vercel Environment Variables or a cloud secret manager; never commit them.
 
 ## Release flow
 

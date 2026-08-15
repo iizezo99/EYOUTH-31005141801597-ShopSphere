@@ -39,6 +39,17 @@ services:
     volumes:
       - ./backend/uploads:/app/uploads
 
+  review-service:
+    build: ./services/review-service
+    container_name: ecommerce_review_service
+    ports:
+      - "5100:5100"
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/ecommerce_db
+      FRONTEND_URL: http://localhost:3000
+
   frontend:
     build:
       context: ./frontend

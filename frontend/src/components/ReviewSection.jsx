@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/authContext';
 import './ReviewSection.css';
 
-const REVIEW_API_URL = import.meta.env.VITE_REVIEW_API_URL || 'http://localhost:5100';
+const REVIEW_API_URL = import.meta.env.VITE_REVIEW_API_URL || '';
 
 const Stars = ({ value, onChange, interactive = false }) => (
   <div className={`review-stars${interactive ? ' review-stars-interactive' : ''}`} aria-label={`${value} out of 5 stars`}>
@@ -31,6 +31,12 @@ const ReviewSection = ({ productId }) => {
   const [message, setMessage] = useState('');
 
   const loadReviews = async () => {
+    if (!REVIEW_API_URL) {
+      setMessage('Reviews are not configured for this deployment.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(`${REVIEW_API_URL}/reviews/${productId}`);
       if (!response.ok) throw new Error('Unable to load reviews');
@@ -52,6 +58,7 @@ const ReviewSection = ({ productId }) => {
   const submitReview = async (event) => {
     event.preventDefault();
     if (!user) return setMessage('Please sign in before submitting a review.');
+    if (!REVIEW_API_URL) return setMessage('Reviews are not configured for this deployment.');
     if (!rating) return setMessage('Please select a star rating.');
     if (!comment.trim()) return setMessage('Please write a short review.');
 

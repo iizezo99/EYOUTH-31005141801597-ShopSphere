@@ -51,7 +51,6 @@ const ProductDetails = () => {
           <button className="btn-primary">Back to Products</button>
         </Link>
       </div>
-      <ReviewSection productId={product.id} />
     </div>
   );
 
@@ -64,6 +63,7 @@ const ProductDetails = () => {
           <button className="btn-primary">Back to Products</button>
         </Link>
       </div>
+      <ReviewSection productId={product.id} />
     </div>
   );
 
