@@ -26,7 +26,7 @@ Pull requests must pass backend tests, frontend tests, the production build, and
 
 ## Monitoring and incident response
 
-Use Vercel logs or the container log collector to search JSON fields `requestId`, `status`, `path`, and `durationMs`. Configure the three UptimeRobot monitors in [UPTIMEROBOT.md](UPTIMEROBOT.md) for the frontend, backend health, and backend readiness URLs. Alert on non-2xx responses, keyword failures, SSL expiration, or sustained latency. Configure Supabase and Atlas alerts for connection failures, CPU/storage thresholds, and backup failures. The Kubernetes manifests include readiness/liveness probes and an HPA; the `aws-simulation` and `gcp-simulation` overlays are namespace simulations for validation, not real multi-cloud production clusters.
+Use Vercel logs or the container log collector to search JSON fields `requestId`, `status`, `path`, and `durationMs`. Configure the four UptimeRobot monitors in [UPTIMEROBOT.md](UPTIMEROBOT.md) for the frontend, backend health, backend readiness, and review-service health URLs. Alert on non-2xx responses, keyword failures, SSL expiration, or sustained latency. Configure Supabase and Atlas alerts for connection failures, CPU/storage thresholds, and backup failures. The Kubernetes manifests include readiness/liveness probes and an HPA; the `aws-simulation` and `gcp-simulation` overlays are namespace simulations for validation, not real multi-cloud production clusters.
 
 ## CDN and shared responsibility
 

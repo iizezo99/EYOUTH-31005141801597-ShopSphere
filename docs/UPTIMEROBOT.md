@@ -13,11 +13,14 @@ Create these HTTP(s) monitors in the UptimeRobot dashboard:
 | Production frontend | `https://eyouth-31005141801597-shop-sphere-q.vercel.app/` | HTTP `200`, keyword `ShopVibe` |
 | Production backend health | `https://eyouth-31005141801597-shop-sphere.vercel.app/health` | HTTP `200`, keyword `\"status\":\"ok\"` |
 | Production backend readiness | `https://eyouth-31005141801597-shop-sphere.vercel.app/health/ready` | HTTP `200`, keyword `\"status\":\"ready\"` |
+| Production review service health | `https://eyouth-31005141801597-shop-sphere-mmyb-4yvi5s338.vercel.app/health` | HTTP `200`, keyword `\"service\":\"review-service\"` |
 
 Use a 5-minute interval, enable SSL-expiration monitoring, and add the team
-email as an alert contact. Keep the readiness monitor enabled because it
-detects missing production database or JWT configuration even when the Vercel
-function itself is reachable.
+email as an alert contact. Keep the readiness and review-service monitors
+enabled because they detect missing production configuration even when a
+Vercel function itself is reachable. The review-service deployment must allow
+UptimeRobot's request through Vercel Deployment Protection; otherwise the
+keyword check will correctly report it as down.
 
 ## Incident response
 
