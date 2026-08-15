@@ -9,6 +9,7 @@ export default defineConfig({
   preview: {
     port: 3000,
     host: true,
+    allowedHosts: ['shopsphere.local', 'shopsphere-gcp.local'],
   },
   test: {
     globals: true,

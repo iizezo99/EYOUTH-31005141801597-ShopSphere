@@ -1,122 +1,79 @@
-# E-Commerce Full-Stack App
+# ShopSphere
 
-A full-stack e-commerce application with a React frontend, Express backend, PostgreSQL (products/users), and MongoDB (shopping cart).
+Full-stack e-commerce application built for the ShopSphere Enterprise Cloud-Native Modernization project.
 
-## GitHub Repository
+## Technologies
 
-**Repository:** https://github.com/iizezo99/ecommerce-fullstack-project
+- React 18
+- Vite
+- React Router
+- Axios
+- React Testing Library and Vitest
+- Express 5
+- Prisma ORM
+- PostgreSQL
+- MongoDB and Mongoose
+- Independent Review Service
+- JWT authentication
+- Nodemailer
+- Docker and Docker Compose
+- Kubernetes and Kustomize
+- Vercel
+- GitHub Actions
+- UptimeRobot
 
-## Technologies Used
+## Deployments
 
-### Frontend
-- **React 18** - User interface library
-- **Vite** - Frontend build tool
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
-- **Vitest** - Testing framework
-- **React Testing Library** - React component testing
-- **MSW (Mock Service Worker)** - API mocking for tests
+- Frontend: [ShopSphere Frontend](https://eyouth-31005141801597-shop-sphere-q.vercel.app)
+- Backend: [ShopSphere Backend](https://eyouth-31005141801597-shop-sphere.vercel.app)
+- Review service: [ShopSphere Review Service](https://eyouth-31005141801597-shop-sphere-mmyb-4yvi5s338.vercel.app)
+- Review service health: [Review Health](https://eyouth-31005141801597-shop-sphere-mmyb-4yvi5s338.vercel.app/health)
+- Backend health: [Health](https://eyouth-31005141801597-shop-sphere.vercel.app/health)
+- Backend readiness: [Readiness](https://eyouth-31005141801597-shop-sphere.vercel.app/health/ready)
+- Products API: [Products](https://eyouth-31005141801597-shop-sphere.vercel.app/api/products)
+- Review service: (https://eyouth-31005141801597-shop-sphere-m.vercel.app)
+- Review service health: (https://eyouth-31005141801597-shop-sphere-m.vercel.app/health)
 
-### Backend
-- **Express 5** - Web framework
-- **Prisma ORM** - Database ORM for PostgreSQL
-- **Prisma Adapter for PostgreSQL** - Prisma Postgres adapter
-- **Mongoose** - ODM for MongoDB (cart)
-- **bcryptjs** - Password hashing
-- **jsonwebtoken** - JWT authentication
-- **cookie-parser** - Cookie handling
-- **cors** - Cross-origin resource sharing
-- **multer** - File upload handling
-- **nodemailer** - Email sending
-- **dotenv** - Environment variables
-- **Jest** - Testing framework
-- **Supertest** - API testing
+## Seed accounts
 
-### Database
-- **PostgreSQL** - Relational database (users, products, categories)
-- **MongoDB** - NoSQL database (shopping cart)
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@example.com` | `123456` |
+| Customer | `customer@example.com` | `123456` |
 
-### DevOps / Infrastructure
-- **Docker** - Containerization
-- **Docker Compose** - Multi-container orchestration
-- **Node.js** - JavaScript runtime
+## Kubernetes simulation
 
-## Quick Start (Docker)
+The project simulates two cloud environments using separate Kubernetes namespaces
+on one local Docker Desktop cluster:
 
-The only requirement is [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+- `aws-simulation`
+- `gcp-simulation`
 
-```bash
-docker compose up --build
+Deploy both environments:
+
+```powershell
+kubectl apply -k k8s/overlays/aws-simulation
+kubectl apply -k k8s/overlays/gcp-simulation
 ```
 
-Wait until all services are healthy. Then open:
+Verify the workloads:
 
-| Service    | URL                          |
-|------------|------------------------------|
-| Frontend   | http://localhost:3000        |
-| Backend    | http://localhost:5000        |
-| Health API | http://localhost:5000/health |
-
-### Default seed accounts
-
-| Role     | Email                  | Password |
-|----------|------------------------|----------|
-| Admin    | admin@example.com      | 123456   |
-| Customer | customer@example.com   | 123456   |
-
-### Stop the app
-
-```bash
-docker compose down
+```powershell
+kubectl -n aws-simulation get pods,svc
+kubectl -n gcp-simulation get pods,svc
 ```
 
-To also remove database volumes:
+Use the shared Ingress controller:
 
-```bash
-docker compose down -v
+```powershell
+kubectl -n ingress-nginx port-forward service/ingress-nginx-controller 18080:80
 ```
 
-## What Docker starts
+Open the default local application at:
 
-1. **PostgreSQL** — users, categories, products
-2. **MongoDB** — shopping carts
-3. **Backend** — runs migrations, seeds data, starts API on port 5000
-4. **Frontend** — builds and serves the React app on port 3000
-
-## Important Notes
-
-- **Admin Role Only Features:** Creating, updating, and deleting products/categories, and viewing the admin dashboard with counts are only accessible to admin users.
-- **Password Update:** To change your password in your profile, you must provide your current password.
-- **Product Photo Requirement:** Products cannot be created or updated without a photo (either via file upload or image URL).
-- **Email Setup:** The app uses Nodemailer for welcome emails. To configure real email sending, set SMTP environment variables in the backend (see backend code for defaults using ethereal.email for testing).
-- **Data Persistence:** By default, Docker volumes are used for PostgreSQL and MongoDB to keep your data even after stopping containers. Use `docker compose down -v` to completely remove all data.
-
-## Running tests locally
-
-### Backend (Jest + Supertest)
-
-```bash
-cd backend
-npm install
-npm test
+```text
+http://localhost:18080
 ```
 
-## Production deployment
-
-Use [docs/PRODUCTION-RUNBOOK.md](docs/PRODUCTION-RUNBOOK.md) for the Supabase PostgreSQL, MongoDB Atlas, Vercel, CI/CD, Kubernetes namespace simulation, security, monitoring, and rollback procedure. Use [docs/UPTIMEROBOT.md](docs/UPTIMEROBOT.md) to configure external uptime monitoring. Configure environment variables directly in each deployment platform and keep local `.env` files untracked.
-
-### Frontend (Vitest + React Testing Library + MSW)
-
-```bash
-cd frontend
-npm install
-npm test
-```
-
-## Project structure
-
-```
-├── backend/          Express API, Prisma, Mongoose
-├── frontend/         React + Vite UI
-└── docker-compose.yml
-```
+Both namespaces have independent frontend and backend Pods and Services, while
+the shared Ingress provides one local load-balancer entry point.
