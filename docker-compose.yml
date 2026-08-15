@@ -55,6 +55,7 @@ services:
       context: ./frontend
       args:
         VITE_API_URL: ${VITE_API_URL}
+        VITE_REVIEW_API_URL: ${VITE_REVIEW_API_URL:-http://localhost:5100}
     container_name: ecommerce_frontend
     ports:
       - "3000:3000"
