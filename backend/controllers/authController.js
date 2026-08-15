@@ -4,6 +4,15 @@ import nodemailer from "nodemailer";
 import "dotenv/config";
 import prisma from "../utils/prisma.js";
 
+const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
+const authCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  path: "/",
+  maxAge: 24 * 60 * 60 * 1000,
+};
+
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "smtp.ethereal.email",
@@ -91,12 +100,7 @@ export const login = async (req, res) => {
     );
 
     // Set cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
+    res.cookie("token", token, authCookieOptions);
 
     res.json({
       message: "Login successful",
@@ -110,7 +114,7 @@ export const login = async (req, res) => {
 
 // Logout
 export const logout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", authCookieOptions);
   res.json({ message: "Logged out successfully" });
 };
 

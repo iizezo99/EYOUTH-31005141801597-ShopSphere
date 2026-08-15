@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/cartContext';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../api/axios';
 
 const Checkout = () => {
-  const { cart } = useCart();
-  const navigate = useNavigate();
+  const { cart, fetchCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [error, setError] = useState('');
+  const [shipping, setShipping] = useState({ firstName: '', lastName: '', email: '', address: '', city: '', zipCode: '' });
 
   const handlePlaceOrder = async () => {
-    setIsProcessing(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setOrderPlaced(true);
-    setIsProcessing(false);
+    try {
+      setIsProcessing(true);
+      setError('');
+      await api.post('/orders', { shipping });
+      await fetchCart();
+      setOrderPlaced(true);
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'Unable to place the order. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const updateShipping = (event) => {
+    setShipping((current) => ({ ...current, [event.target.name]: event.target.value }));
   };
 
   if (orderPlaced) {
@@ -42,12 +54,12 @@ const Checkout = () => {
           <div className="card" style={{ marginBottom: '1.5rem' }}>
             <h3 style={{ marginBottom: '1rem' }}>Shipping Information</h3>
             <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: '1fr 1fr' }}>
-              <input type="text" placeholder="First Name" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
-              <input type="text" placeholder="Last Name" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
-              <input type="email" placeholder="Email" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db', gridColumn: '1 / -1' }} />
-              <input type="text" placeholder="Address" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db', gridColumn: '1 / -1' }} />
-              <input type="text" placeholder="City" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
-              <input type="text" placeholder="Zip Code" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
+              <input name="firstName" value={shipping.firstName} onChange={updateShipping} type="text" placeholder="First Name" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
+              <input name="lastName" value={shipping.lastName} onChange={updateShipping} type="text" placeholder="Last Name" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
+              <input name="email" value={shipping.email} onChange={updateShipping} type="email" placeholder="Email" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db', gridColumn: '1 / -1' }} />
+              <input name="address" value={shipping.address} onChange={updateShipping} type="text" placeholder="Address" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db', gridColumn: '1 / -1' }} />
+              <input name="city" value={shipping.city} onChange={updateShipping} type="text" placeholder="City" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
+              <input name="zipCode" value={shipping.zipCode} onChange={updateShipping} type="text" placeholder="Zip Code" style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #d1d5db' }} />
             </div>
           </div>
 
@@ -86,6 +98,7 @@ const Checkout = () => {
             >
               {isProcessing ? 'Processing...' : 'Place Order'}
             </button>
+            {error && <p role="alert" style={{ color: '#dc2626', marginTop: '1rem' }}>{error}</p>}
             <Link to="/cart" style={{ display: 'block', textAlign: 'center', marginTop: '1rem', color: '#3b82f6', textDecoration: 'none' }}>
               Back to Cart
             </Link>
