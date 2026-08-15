@@ -103,7 +103,7 @@ npm test
 
 ## Production deployment
 
-Use [docs/PRODUCTION-RUNBOOK.md](docs/PRODUCTION-RUNBOOK.md) for the Supabase PostgreSQL, MongoDB Atlas, Vercel, CI/CD, Kubernetes simulation, security, monitoring, and rollback procedure. Configure environment variables directly in each deployment platform and keep local `.env` files untracked.
+Use [docs/PRODUCTION-RUNBOOK.md](docs/PRODUCTION-RUNBOOK.md) for the Supabase PostgreSQL, MongoDB Atlas, Vercel, CI/CD, Kubernetes namespace simulation, security, monitoring, and rollback procedure. Use [docs/UPTIMEROBOT.md](docs/UPTIMEROBOT.md) to configure external uptime monitoring. Configure environment variables directly in each deployment platform and keep local `.env` files untracked.
 
 ### Frontend (Vitest + React Testing Library + MSW)
 

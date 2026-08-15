@@ -46,6 +46,35 @@ describe('Health endpoint', () => {
   });
 });
 
+describe('CORS policy', () => {
+  it('allows the production frontend origin', async () => {
+    const res = await request(app)
+      .get('/health')
+      .set('Origin', 'https://eyouth-31005141801597-shop-sphere-q.vercel.app');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['access-control-allow-origin'])
+      .toBe('https://eyouth-31005141801597-shop-sphere-q.vercel.app');
+    expect(res.headers['access-control-allow-credentials']).toBe('true');
+  });
+
+  it('does not allow an untrusted origin', async () => {
+    const res = await request(app)
+      .get('/health')
+      .set('Origin', 'https://attacker.example');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['access-control-allow-origin']).toBeUndefined();
+  });
+
+  it('allows requests without an Origin header', async () => {
+    const res = await request(app).get('/health');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['access-control-allow-origin']).toBeUndefined();
+  });
+});
+
 describe('Categories API', () => {
   beforeEach(() => {
     mockCategoryFindMany.mockReset();

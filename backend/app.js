@@ -17,6 +17,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+const productionFrontendOrigin = 'https://eyouth-31005141801597-shop-sphere-q.vercel.app';
+const allowedOrigins = new Set([
+  productionFrontendOrigin,
+  process.env.FRONTEND_URL,
+].filter(Boolean));
+
+if (process.env.NODE_ENV !== 'production') {
+  allowedOrigins.add('http://localhost:3000');
+  allowedOrigins.add('http://127.0.0.1:3000');
+}
+
 app.disable('x-powered-by');
 // Vercel and the ingress controller forward the client IP in this header.
 // Trust one proxy hop so express-rate-limit can identify clients correctly.
@@ -39,8 +50,12 @@ const apiLimiter = rateLimit({
 
 
 app.use(cors({
-  // Echo the requesting origin so cookies can be used; '*' is invalid with credentials.
-  origin: true,
+  origin: (origin, callback) => {
+    // Non-browser requests do not send Origin and should remain usable for
+    // health checks, CLI clients, and server-to-server calls.
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(null, false);
+  },
   credentials: true
 }));
 app.use(express.json());
