@@ -1,9 +1,17 @@
 import 'dotenv/config';
-import mongoose from 'mongoose';
 import app from '../app.js';
+import { connectDatabase } from '../db.js';
 
-if (process.env.MONGO_URI && mongoose.connection.readyState === 0) {
-  await mongoose.connect(process.env.MONGO_URI);
+export default async function handler(req, res) {
+  if (req.url === '/health' || req.url?.startsWith('/health?')) {
+    return app(req, res);
+  }
+
+  try {
+    await connectDatabase();
+    return app(req, res);
+  } catch (error) {
+    console.error('Review service database connection failed:', error.message);
+    return res.status(503).json({ error: 'Review service database is unavailable' });
+  }
 }
-
-export default app;
