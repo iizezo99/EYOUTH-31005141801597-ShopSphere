@@ -78,3 +78,24 @@ The frontend services are then available at:
 
 Ingress and port-forwarding are optional local access methods. The two
 namespaces are used to simulate separate cloud environments on one cluster.
+
+## CI/CD and protected main branch
+
+GitHub Actions runs the ShopSphere CI/CD workflow on pull requests and pushes
+to `main`. The `test-and-build` job runs:
+
+- Backend tests
+- Frontend tests
+- Frontend production build
+- AWS and GCP Kubernetes manifest validation
+
+The `main` branch is protected. Changes should be submitted through a pull
+request, and the required check is:
+
+```text
+EYOUTH-31005141801597-ShopSphere CI/CD / test-and-build
+```
+
+If the check fails, GitHub blocks the pull request from merging into `main`.
+After it passes, the pull request can be merged and the production deployment
+workflow can run.
