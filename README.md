@@ -2,6 +2,11 @@
 
 Full-stack e-commerce application built for the ShopSphere Enterprise Cloud-Native Modernization project.
 
+## Remote repository
+
+- Name: `EYOUTH-31005141801597-ShopSphere`
+- GitHub: [iizezo99/EYOUTH-31005141801597-ShopSphere](https://github.com/iizezo99/EYOUTH-31005141801597-ShopSphere)
+
 ## Technologies
 
 - React 18
@@ -31,8 +36,6 @@ Full-stack e-commerce application built for the ShopSphere Enterprise Cloud-Nati
 - Backend health: [Health](https://eyouth-31005141801597-shop-sphere.vercel.app/health)
 - Backend readiness: [Readiness](https://eyouth-31005141801597-shop-sphere.vercel.app/health/ready)
 - Products API: [Products](https://eyouth-31005141801597-shop-sphere.vercel.app/api/products)
-- Review service: (https://eyouth-31005141801597-shop-sphere-m.vercel.app)
-- Review service health: (https://eyouth-31005141801597-shop-sphere-m.vercel.app/health)
 
 ## Seed accounts
 
@@ -56,24 +59,22 @@ kubectl apply -k k8s/overlays/aws-simulation
 kubectl apply -k k8s/overlays/gcp-simulation
 ```
 
-Verify the workloads:
+### Port forwarding
+
+Forward each namespace independently using a different local port:
 
 ```powershell
-kubectl -n aws-simulation get pods,svc
-kubectl -n gcp-simulation get pods,svc
+# AWS simulation
+kubectl -n aws-simulation port-forward service/eyouth-31005141801597-shopsphere-frontend 3001:3000
+
+# GCP simulation
+kubectl -n gcp-simulation port-forward service/eyouth-31005141801597-shopsphere-frontend 3002:3000
 ```
 
-Use the shared Ingress controller:
+The frontend services are then available at:
 
-```powershell
-kubectl -n ingress-nginx port-forward service/ingress-nginx-controller 18080:80
-```
+- AWS simulation: `http://localhost:3001`
+- GCP simulation: `http://localhost:3002`
 
-Open the default local application at:
-
-```text
-http://localhost:18080
-```
-
-Both namespaces have independent frontend and backend Pods and Services, while
-the shared Ingress provides one local load-balancer entry point.
+Ingress and port-forwarding are optional local access methods. The two
+namespaces are used to simulate separate cloud environments on one cluster.
