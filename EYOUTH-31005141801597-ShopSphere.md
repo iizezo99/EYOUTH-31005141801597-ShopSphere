@@ -113,26 +113,55 @@ URLs:
 
 The diagram matches the deployed ShopSphere application:
 
-```mermaid
-flowchart LR
-    U[Customer browser]
-    F[Vercel frontend\nReact + Vite]
-    B[Vercel backend\nExpress API]
-    R[Vercel review service\nReviews API]
-    P[(Supabase PostgreSQL\nUsers, products, categories)]
-    M[(MongoDB\nCarts, orders, reviews)]
+```text
+                         ShopSphere - Production Architecture
 
-    U -->|HTTPS| F
-    F -->|HTTPS REST /api| B
-    F -->|HTTPS REST /reviews| R
-    B -->|Prisma| P
-    B -->|Mongoose| M
-    R -->|Mongoose| M
+                                +---------------+
+                                |    Customer   |
+                                |    Browser    |
+                                +-------+-------+
+                                        |
+                                      HTTPS
+                                        |
+                                        v
+                         +-----------------------------+
+                         |       Vercel Frontend       |
+                         |        React 19 + Vite       |
+                         +--------------+--------------+
+                                        |
+                         +--------------+--------------+
+                         |                             |
+                      HTTPS REST                    HTTPS REST
+                         |                             |
+                         v                             v
+                +-------------------+       +-------------------+
+                |   Vercel Backend  |       |   Review Service  |
+                |    Express 5 API  |       |   Independent API |
+                +---------+---------+       +---------+---------+
+                          |                           |
+                       Prisma                      Mongoose
+                          |                           |
+                          v                           v
+                +-------------------+       +-------------------+
+                | Supabase Postgres |       |      MongoDB      |
+                | Users             |       | Product reviews   |
+                | Products          |       +-------------------+
+                | Categories        |
+                +-------------------+
+                          |
+                       Mongoose
+                          v
+                +-------------------+
+                |      MongoDB      |
+                | Carts             |
+                | Orders            |
+                +-------------------+
 ```
 
-Traffic flows from the frontend to the backend and independent review service.
-The backend uses Supabase PostgreSQL for relational data and MongoDB for cart
-and order data; the review service uses MongoDB for product reviews.
+Traffic flows from the customer browser to the Vercel frontend, then through
+HTTPS REST calls to the main backend and the independently deployed review
+service. Relational data is stored in Supabase PostgreSQL, while carts and
+orders use MongoDB and reviews use the review service's MongoDB connection.
 
 ## Secrets and production security
 
