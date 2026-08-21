@@ -1,6 +1,6 @@
 import Cart from '../models/cart.js';
 import Order from '../models/order.js';
-import { sendOrderNotification } from '../services/notificationService.js';
+import { sendOrderNotificationViaFunction } from '../services/notificationService.js';
 
 export const createOrder = async (req, res) => {
   try {
@@ -31,7 +31,7 @@ export const createOrder = async (req, res) => {
       const itemLines = order.items
         .map((item) => `- ${item.name} x ${item.quantity} ($${(item.price * item.quantity).toFixed(2)})`)
         .join('\n');
-      await sendOrderNotification({
+      await sendOrderNotificationViaFunction({
         orderId: order.id,
         subject: `New ShopSphere order ${order.id}`,
         text: [

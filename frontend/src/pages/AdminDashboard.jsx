@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import './AdminDashboard.css';
 
@@ -164,7 +164,7 @@ const AdminDashboard = () => {
     try {
       await api.delete(`/products/${id}`);
       fetchProducts();
-    } catch (error) {
+    } catch {
       alert('Error deleting product');
     }
   };
@@ -174,7 +174,7 @@ const AdminDashboard = () => {
     try {
       await api.delete(`/categories/${id}`);
       fetchCategories();
-    } catch (error) {
+    } catch {
       alert('Error deleting category');
     }
   };

@@ -1,6 +1,5 @@
-import React from 'react';
 import { useCart } from '../context/cartContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
 const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/100';
@@ -8,7 +7,6 @@ const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/100';
 const Cart = () => {
   const { cart, removeFromCart, addToCart } = useCart();
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const handleQuantityChange = (item, delta) => {
     const newQuantity = item.quantity + delta;

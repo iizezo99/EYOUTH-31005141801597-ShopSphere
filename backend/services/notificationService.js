@@ -9,6 +9,33 @@ export function isNotificationConfigured() {
   );
 }
 
+export async function sendOrderNotificationViaFunction({ orderId, subject, text }) {
+  const functionUrl = process.env.NOTIFY_FUNCTION_URL;
+  const functionToken = process.env.INTERNAL_FUNCTION_TOKEN;
+
+  if (!functionUrl || !functionToken) {
+    return sendOrderNotification({ orderId, subject, text });
+  }
+
+  const response = await fetch(functionUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${functionToken}`,
+    },
+    body: JSON.stringify({ orderId, subject, text }),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    const error = new Error(`Notification function failed with ${response.status}: ${details}`);
+    error.code = 'NOTIFICATION_FUNCTION_FAILED';
+    throw error;
+  }
+
+  return response.json();
+}
+
 export async function sendOrderNotification({ orderId, subject, text }) {
   if (!isNotificationConfigured()) {
     const error = new Error('Notification email is not configured');

@@ -3,15 +3,16 @@ import mongoose from 'mongoose';
 let connectionPromise;
 
 export async function connectDatabase() {
-  if (!process.env.MONGO_URI) {
-    const error = new Error('MONGO_URI is not configured');
+  const mongoUri = process.env.REVIEW_MONGO_URI || process.env.MONGO_URI;
+  if (!mongoUri) {
+    const error = new Error('Review database connection is not configured');
     error.code = 'MONGO_URI_MISSING';
     throw error;
   }
 
   if (mongoose.connection.readyState === 1) return;
   if (!connectionPromise) {
-    connectionPromise = mongoose.connect(process.env.MONGO_URI).catch((error) => {
+    connectionPromise = mongoose.connect(mongoUri).catch((error) => {
       connectionPromise = undefined;
       throw error;
     });
